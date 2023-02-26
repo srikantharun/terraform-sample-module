@@ -1,6 +1,6 @@
 {
   "data": {
-    "type": "registry-module-versions",
+    "type": "terraform-google-sample-module",
     "attributes": {
       "version": "1.0.0"
     }
