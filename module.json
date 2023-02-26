@@ -2,7 +2,7 @@
         "data": {
           "type": "registry-modules",
           "attributes": {
-            "name": "terraform-google-vdc-vpc",
+            "name": "terraform-google-sample-module",
             "provider": "google",
             "registry-name": "private"
           }
