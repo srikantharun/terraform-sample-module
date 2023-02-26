@@ -1,0 +1,48 @@
+name: terraform-promote
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: trial-cluster    # Add your cluster name here.
+  GKE_ZONE: europe-west2  # Add your cluster zone here.
+  DEPLOYMENT_NAME: python-app # Add your deployment name here.
+  IMAGE: python-app
+
+jobs:
+  deployment:
+    runs-on: 'ubuntu-latest'
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: 'Checkout'
+      uses: 'actions/checkout@v1'
+
+    - name: Promote and Publish 
+      run: |-
+        sed -i -e 's/GITHUB_SHA/'"$GITHUB_SHA"'/' ${{ github.workspace }}/versions.json
+
+        curl \
+         --header "Authorization: Bearer $TERRAFORM_REGISTRY_TOKEN" \
+         --header "Content-Type: application/vnd.api+json" \
+         --request POST \
+         --data @module.json \
+        https://app.terraform.io/api/v2/organizations/$TF_ORGANIZATION/registry-modules 
+
+        export push_url=$(curl -s \
+         —- header “Authorization: Bearer $$TERRAFORM_CLOUD_TOKEN” \
+         —- header “Content-Type: application/vnd.api+json” \
+         —- request POST \
+         —- data @version.json \
+        https://app.terraform.io/api/v2/organizations/$TF_ORGANIZATION/registry-modules/private/$TF_ORGANIZATION/demo-module-bucket/google/versions | jq -r ‘.data.links.upload’)
+
+        tar cvfz demo_module_bucket.tar.gz  ${{ github.workspace }}/*
+
+         curl \                                                                                                                                    --header "Content-Type: application/octet-stream" \
+          --request PUT \
+          --data-binary @demo_module_bucket.tar.gz \
+         ${push_url}
