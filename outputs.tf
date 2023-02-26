@@ -1,22 +1,24 @@
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
-output "network" {
-  value = "${module.vpc.network_name}"
+output "full_name" {
+  value       = "${github_repository.new-repository.full_name}"
+  description = "A string of the form orgname/reponame"
 }
 
-output "subnet" {
-  value = "${element(module.vpc.subnets_names, 0)}"
+output "ssh_clone_url" {
+  value       = "${github_repository.new-repository.ssh_clone_url}"
+  description = "URL that can be provided to git clone to clone the repository via SSH"
+}
+
+output "http_clone_url" {
+  value       = "${github_repository.new-repository.ssh_clone_url}"
+  description = "URL that can be provided to git clone to clone the repository via HTTPS"
+}
+
+output "git_clone_url" {
+  value       = "${github_repository.new-repository.git_clone_url}"
+  description = "URL that can be provided to git clone to clone the repository anonymously via the git protocol"
+}
+
+output "svn_url" {
+  value       = "${github_repository.new-repository.svn_url}"
+  description = "URL that can be provided to svn checkout to check out the repository via Github's Subversion protocol emulation"
 }
